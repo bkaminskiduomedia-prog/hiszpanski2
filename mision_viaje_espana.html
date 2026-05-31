@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Misión: Viaje a España 🇪🇸</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --red: #D62828;
+    --yellow: #F7B731;
+    --orange: #F77F00;
+    --blue: #003087;
+    --sky: #4FC3F7;
+    --green: #27AE60;
+    --light-green: #2ECC71;
+    --pink: #E91E8C;
+    --purple: #8B5CF6;
+    --white: #FFFDF7;
+    --dark: #1A1A2E;
+    --card-bg: rgba(255,255,255,0.97);
+    --shadow: 0 8px 32px rgba(0,0,0,0.18);
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', 'Arial Rounded MT Bold', sans-serif;
+    background: linear-gradient(135deg, #D62828 0%, #F7B731 35%, #F77F00 65%, #D62828 100%);
+    background-size: 400% 400%;
+    animation: bgShift 8s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    overflow-x: hidden;
+  }
+
+  @keyframes bgShift {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 560px;
+    animation: fadeInUp 0.5s ease;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--red), var(--yellow), var(--orange));
+  }
+
+  /* ---- WELCOME SCREEN ---- */
+  .welcome-hero {
+    text-align: center;
+    padding: 10px 0 20px;
+  }
+
+  .flag-icon {
+    font-size: 72px;
+    display: block;
+    margin: 0 auto 10px;
+    animation: bounce 2s infinite;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .game-title {
+    font-family: 'Fredoka One', 'Arial Rounded MT Bold', cursive;
+    font-size: clamp(28px, 7vw, 42px);
+    color: var(--red);
+    line-height: 1.1;
+    text-shadow: 3px 3px 0 rgba(215,40,40,0.2);
+  }
+
+  .game-subtitle {
+    font-size: 16px;
+    color: #555;
+    margin: 8px 0 20px;
+    font-weight: 600;
+  }
+
+  .cities-preview {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+
+  .city-chip {
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: white;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(215,40,40,0.3);
+  }
+
+  label.input-label {
+    display: block;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--dark);
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 16px 18px;
+    border: 3px solid #E8E8E8;
+    border-radius: 14px;
+    font-size: 18px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--dark);
+    background: #FAFAFA;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(214,40,40,0.12);
+    background: white;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    font-size: 20px;
+    font-family: 'Fredoka One', cursive;
+    font-weight: 400;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.5px;
+    margin-top: 16px;
+  }
+
+  .btn:active { transform: scale(0.96); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(214,40,40,0.4);
+  }
+
+  .btn-primary:hover { box-shadow: 0 8px 28px rgba(214,40,40,0.5); transform: translateY(-2px); }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--sky) 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(0,48,135,0.3);
+  }
+
+  /* ---- CITY INTRO SCREEN ---- */
+  .city-intro-header {
+    text-align: center;
+    padding-bottom: 16px;
+  }
+
+  .city-emoji {
+    font-size: 64px;
+    display: block;
+    margin: 0 auto 8px;
+    animation: pulse 1.5s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .city-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(32px, 8vw, 48px);
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .city-tagline {
+    font-size: 15px;
+    color: #666;
+    margin: 6px 0 0;
+    font-style: italic;
+  }
+
+  .stage-badge {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--dark);
+    border-radius: 12px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 800;
+    margin: 12px 0 16px;
+  }
+
+  .city-description {
+    background: linear-gradient(135deg, #FFF8E7, #FFF3CD);
+    border-left: 5px solid var(--yellow);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .badge-earn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2E7D32;
+  }
+
+  /* ---- GAME SCREEN ---- */
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+
+  .score-box {
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: white;
+    border-radius: 14px;
+    padding: 8px 16px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    box-shadow: 0 4px 12px rgba(214,40,40,0.3);
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .score-label {
+    font-size: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+    display: block;
+  }
+
+  .progress-section {
+    flex: 1;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .progress-bar-bg {
+    height: 10px;
+    background: #E8E8E8;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--yellow));
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .city-indicator {
+    background: var(--blue);
+    color: white;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    min-width: 70px;
+  }
+
+  .question-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 2px solid #F0F0F0;
+    margin-bottom: 16px;
+  }
+
+  .question-type-badge {
+    display: inline-block;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .question-points {
+    float: right;
+    background: var(--yellow);
+    color: var(--dark);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .question-text {
+    font-size: clamp(17px, 4.5vw, 21px);
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+
+  .question-text .blank {
+    display: inline-block;
+    min-width: 100px;
+    border-bottom: 3px solid var(--red);
+    color: var(--red);
+    font-style: italic;
+    padding: 0 4px;
+  }
+
+  /* Multiple choice */
+  .options-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .option-btn {
+    width: 100%;
+    padding: 16px 18px;
+    background: #F8F8F8;
+    border: 2.5px solid #E0E0E0;
+    border-radius: 14px;
+    font-size: 17px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--red);
+    background: #FFF5F5;
+    transform: translateX(4px);
+  }
+
+  .option-btn.correct {
+    background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+    border-color: var(--green);
+    color: #1B5E20;
+  }
+
+  .option-btn.wrong {
+    background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+    border-color: var(--red);
+    color: #B71C1C;
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  /* Matching */
+  .matching-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .matching-col { display: flex; flex-direction: column; gap: 8px; }
+  .matching-col-title { font-size: 13px; font-weight: 800; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .match-item {
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2.5px solid transparent;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .match-left {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    color: #1565C0;
+    border-color: #90CAF9;
+  }
+
+  .match-right {
+    background: #F5F5F5;
+    color: var(--dark);
+    border-color: #E0E0E0;
+  }
+
+  .match-left.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,48,135,0.2); }
+  .match-right.selected-target { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(247,127,0,0.2); }
+  .match-item.matched-correct { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border-color: var(--green); color: #1B5E20; cursor: default; }
+  .match-item.matched-wrong { background: linear-gradient(135deg, #FFEBEE, #FFCDD2); border-color: var(--red); color: #B71C1C; }
+  .match-item:disabled, .match-item[data-matched="true"] { cursor: default; }
+
+  /* Fill in the blank */
+  .fill-input {
+    width: 100%;
+    padding: 16px 18px;
+    border: 3px solid #E0E0E0;
+    border-radius: 14px;
+    font-size: 20px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--dark);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .fill-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0,48,135,0.1);
+  }
+
+  .fill-input.correct-input { border-color: var(--green); background: #E8F5E9; color: #1B5E20; }
+  .fill-input.wrong-input { border-color: var(--red); background: #FFEBEE; color: #B71C1C; }
+
+  .btn-check {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--blue), var(--sky));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-family: 'Fredoka One', cursive;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(0,48,135,0.3);
+  }
+
+  .btn-check:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,48,135,0.4); }
+  .btn-check:active { transform: scale(0.97); }
+
+  /* Feedback */
+  .feedback-box {
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    display: none;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .feedback-box.correct {
+    display: block;
+    background: linear-gradient(135deg, #E8F5E9, #DCEDC8);
+    border-left: 5px solid var(--green);
+  }
+
+  .feedback-box.wrong {
+    display: block;
+    background: linear-gradient(135deg, #FFEBEE, #FCE4EC);
+    border-left: 5px solid var(--red);
+  }
+
+  .feedback-icon { font-size: 24px; margin-bottom: 4px; }
+  .feedback-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .feedback-title.ok { color: #2E7D32; }
+  .feedback-title.bad { color: #C62828; }
+  .feedback-explain { font-size: 14px; color: #555; line-height: 1.5; }
+
+  .btn-next {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--green), var(--light-green));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-family: 'Fredoka One', cursive;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 16px rgba(39,174,96,0.4);
+    transition: transform 0.15s;
+    display: none;
+  }
+
+  .btn-next:hover { transform: translateY(-2px); }
+  .btn-next:active { transform: scale(0.97); }
+  .btn-next.visible { display: block; }
+
+  /* Points popup */
+  .points-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: white;
+    border-radius: 50%;
+    width: 100px; height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    z-index: 999;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(247,183,49,0.6);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .points-popup.show { transform: translate(-50%, -50%) scale(1); }
+  .points-popup.hide { transform: translate(-50%, -50%) scale(0) translateY(-60px); transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0; }
+  .points-popup small { font-size: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; }
+
+  /* ---- CITY COMPLETE ---- */
+  .city-complete-card { text-align: center; }
+
+  .badge-display {
+    font-size: 80px;
+    display: block;
+    margin: 10px auto;
+    animation: badgePop 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes badgePop {
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .city-complete-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    color: var(--red);
+    margin: 8px 0 4px;
+  }
+
+  .badges-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+
+  .badge-earned {
+    font-size: 36px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+  }
+
+  .badge-locked { font-size: 36px; filter: grayscale(1) opacity(0.4); }
+
+  /* ---- FINAL SCREEN ---- */
+  .final-screen { text-align: center; }
+
+  .trophy {
+    font-size: 88px;
+    display: block;
+    margin: 0 auto 10px;
+    animation: trophySpin 1s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes trophySpin {
+    from { transform: scale(0) rotate(-180deg); }
+    to { transform: scale(1) rotate(0deg); }
+  }
+
+  .final-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(28px, 7vw, 40px);
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+
+  .player-name-display {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 20px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .stat-box {
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .stat-box.score { background: linear-gradient(135deg, var(--red), var(--orange)); color: white; }
+  .stat-box.percent { background: linear-gradient(135deg, var(--blue), var(--sky)); color: white; }
+  .stat-box.correct { background: linear-gradient(135deg, var(--green), var(--light-green)); color: white; }
+  .stat-box.grade { background: linear-gradient(135deg, var(--purple), #C084FC); color: white; }
+
+  .stat-number {
+    font-family: 'Fredoka One', cursive;
+    font-size: 32px;
+    display: block;
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 800;
+    opacity: 0.9;
+    letter-spacing: 0.3px;
+  }
+
+  .grade-message {
+    background: linear-gradient(135deg, #FFF8E7, #FFF3CD);
+    border: 3px solid var(--yellow);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 16px 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.5;
+  }
+
+  .confetti-area {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 14px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  .level-up-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .level-up-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .level-up-card {
+    background: linear-gradient(135deg, var(--yellow) 0%, var(--orange) 100%);
+    border-radius: 24px;
+    padding: 36px 40px;
+    text-align: center;
+    box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+    animation: levelUpBounce 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes levelUpBounce {
+    from { transform: scale(0.5); }
+    to { transform: scale(1); }
+  }
+
+  .level-up-icon { font-size: 72px; display: block; margin-bottom: 8px; }
+  .level-up-text { font-family: 'Fredoka One', cursive; font-size: 36px; color: white; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+  .level-up-sub { font-size: 18px; font-weight: 800; color: rgba(255,255,255,0.9); margin-top: 4px; }
+
+  .hint-box {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    border-left: 4px solid var(--sky);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #1565C0;
+    font-weight: 600;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  .dialog-bubble {
+    background: white;
+    border: 2.5px solid #E0E0E0;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .dialog-speaker {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .dialog-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.5;
+  }
+
+  .dialog-speaker-icon { font-size: 20px; margin-right: 6px; }
+
+  /* Animations */
+  @keyframes scoreFlash {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .score-flash { animation: scoreFlash 0.3s ease; }
+
+  .decorative-dots {
+    position: absolute;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: 0.05;
+    background: var(--red);
+    top: -40px; right: -40px;
+    pointer-events: none;
+  }
+
+  .question-number {
+    font-size: 13px;
+    font-weight: 800;
+    color: #999;
+    margin-bottom: 6px;
+  }
+
+  /* Tablet / desktop */
+  @media (min-width: 600px) {
+    .card { padding: 36px 32px; }
+    .options-grid { gap: 12px; }
+    .option-btn { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CONFETTI -->
+<div class="confetti-area" id="confettiArea"></div>
+
+<!-- LEVEL UP OVERLAY -->
+<div class="level-up-overlay" id="levelUpOverlay">
+  <div class="level-up-card">
+    <span class="level-up-icon" id="levelUpIcon">⭐</span>
+    <div class="level-up-text">¡NIVEL NUEVO!</div>
+    <div class="level-up-sub" id="levelUpSub">Pasas a la siguiente ciudad</div>
+  </div>
+</div>
+
+<!-- POINTS POPUP -->
+<div class="points-popup" id="pointsPopup">
+  <span id="pointsPopupVal">+10</span>
+  <small>puntos</small>
+</div>
+
+<!-- SCREEN 1: WELCOME -->
+<div class="screen active" id="screenWelcome">
+  <div class="card">
+    <div class="decorative-dots"></div>
+    <div class="welcome-hero">
+      <span class="flag-icon">🇪🇸</span>
+      <h1 class="game-title">Misión:<br>Viaje a España</h1>
+      <p class="game-subtitle">Aprende el Pretérito Indefinido</p>
+      <div class="cities-preview">
+        <span class="city-chip">🏛️ Madrid</span>
+        <span class="city-chip">💃 Sevilla</span>
+        <span class="city-chip">🍊 Valencia</span>
+        <span class="city-chip">🎨 Barcelona</span>
+        <span class="city-chip">⛪ Santiago</span>
+      </div>
+    </div>
+    <label class="input-label">👤 ¿Cómo te llamas?</label>
+    <input type="text" id="playerNameInput" placeholder="Escribe tu nombre aquí..." maxlength="30">
+    <button class="btn btn-primary" onclick="startGame()">¡EMPEZAR LA MISIÓN! 🚀</button>
+    <p style="text-align:center;font-size:13px;color:#aaa;margin-top:14px;">5 ciudades · 25 preguntas · ¡Buena suerte!</p>
+  </div>
+</div>
+
+<!-- SCREEN 2: CITY INTRO -->
+<div class="screen" id="screenCityIntro">
+  <div class="card">
+    <div class="city-intro-header">
+      <span class="city-emoji" id="introEmoji">🏛️</span>
+      <h2 class="city-name" id="introCityName">Madrid</h2>
+      <p class="city-tagline" id="introCityTagline">La capital de España</p>
+      <span class="stage-badge" id="introStageBadge">Etapa 1 de 5</span>
+    </div>
+    <div class="city-description" id="introCityDesc">Texto descriptivo</div>
+    <div class="badge-earn">
+      <span style="font-size:28px" id="introBadgeEmoji">🏅</span>
+      <span>Gana la insignia de <strong id="introBadgeName">Madrid</strong></span>
+    </div>
+    <div class="badges-row" id="badgesRowIntro"></div>
+    <button class="btn btn-primary" id="btnStartCity" onclick="startCityQuestions()">¡VAMOS! ➡️</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: GAME (questions) -->
+<div class="screen" id="screenGame">
+  <div class="card">
+    <div class="game-header">
+      <div class="city-indicator" id="cityIndicator">Madrid 🏛️</div>
+      <div class="progress-section">
+        <div class="progress-text" id="progressText">Pregunta 1 de 25</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="score-box">
+        <span class="score-label">PUNTOS</span>
+        <span id="scoreDisplay">0</span>
+      </div>
+    </div>
+    <div id="questionArea"></div>
+  </div>
+</div>
+
+<!-- SCREEN 4: CITY COMPLETE -->
+<div class="screen" id="screenCityComplete">
+  <div class="card city-complete-card">
+    <span class="badge-display" id="cityBadgeDisplay">🏅</span>
+    <h2 class="city-complete-title" id="cityCompleteTitle">¡Misión cumplida!</h2>
+    <p id="cityCompleteMsg" style="color:#666;font-size:15px;margin:6px 0 16px">Has completado Madrid</p>
+    <div class="stats-grid">
+      <div class="stat-box score">
+        <span class="stat-number" id="ccScore">0</span>
+        <span class="stat-label">Puntos totales</span>
+      </div>
+      <div class="stat-box correct">
+        <span class="stat-number" id="ccCorrect">0</span>
+        <span class="stat-label">Correctas esta etapa</span>
+      </div>
+    </div>
+    <div class="badges-row" id="badgesRowComplete"></div>
+    <button class="btn btn-primary" id="btnNextCity" onclick="proceedAfterCity()">SIGUIENTE CIUDAD ➡️</button>
+  </div>
+</div>
+
+<!-- SCREEN 5: FINAL -->
+<div class="screen" id="screenFinal">
+  <div class="card final-screen">
+    <span class="trophy" id="finalTrophy">🏆</span>
+    <h2 class="final-title">¡MISIÓN COMPLETADA!</h2>
+    <p class="player-name-display">¡Enhorabuena, <span id="finalPlayerName">Jugador</span>!</p>
+    <div class="stats-grid">
+      <div class="stat-box score">
+        <span class="stat-number" id="finalScore">0</span>
+        <span class="stat-label">Puntos totales</span>
+      </div>
+      <div class="stat-box percent">
+        <span class="stat-number" id="finalPercent">0%</span>
+        <span class="stat-label">Respuestas correctas</span>
+      </div>
+      <div class="stat-box correct">
+        <span class="stat-number" id="finalCorrect">0</span>
+        <span class="stat-label">Correctas de <span id="finalTotal">25</span></span>
+      </div>
+      <div class="stat-box grade">
+        <span class="stat-number" id="finalGrade" style="font-size:22px">🌟</span>
+        <span class="stat-label">Calificación</span>
+      </div>
+    </div>
+    <div class="grade-message" id="finalMessage">¡Excelente trabajo!</div>
+    <div class="badges-row" id="badgesRowFinal"></div>
+    <button class="btn btn-primary" onclick="restartGame()">🔄 JUGAR DE NUEVO</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+const CITIES = [
+  {
+    name: "Madrid",
+    emoji: "🏛️",
+    tagline: "La capital de España te espera",
+    badge: "🏅",
+    badgeName: "Explorador de Madrid",
+    description: "¡Bienvenido a Madrid! La capital de España es famosa por sus museos, el Parque del Retiro y la deliciosa comida. Aquí empezamos con preguntas fáciles sobre el Pretérito Indefinido.",
+    color: "#D62828"
+  },
+  {
+    name: "Sevilla",
+    emoji: "💃",
+    tagline: "La ciudad del flamenco y la alegría",
+    badge: "💃",
+    badgeName: "Bailarín de Sevilla",
+    description: "¡Bienvenido a Sevilla! La ciudad del flamenco, la catedral más grande de España y la deliciosa comida andaluza. Las preguntas son un poco más difíciles aquí.",
+    color: "#F77F00"
+  },
+  {
+    name: "Valencia",
+    emoji: "🍊",
+    tagline: "La ciudad de la paella y las naranjas",
+    badge: "🍊",
+    badgeName: "Cocinero de Valencia",
+    description: "¡Bienvenido a Valencia! Famosa por la paella, la Ciudad de las Artes y las naranjas. Practicamos frases más complejas con el Pretérito Indefinido.",
+    color: "#F7B731"
+  },
+  {
+    name: "Barcelona",
+    emoji: "🎨",
+    tagline: "La ciudad de Gaudí y el arte",
+    badge: "🎨",
+    badgeName: "Artista de Barcelona",
+    description: "¡Bienvenido a Barcelona! La ciudad de Gaudí, el Camp Nou y las Ramblas. Las preguntas incluyen diálogos y formas más complejas.",
+    color: "#003087"
+  },
+  {
+    name: "Santiago de Compostela",
+    emoji: "⛪",
+    tagline: "El final del Camino de Santiago",
+    badge: "🌟",
+    badgeName: "Peregrino del Camino",
+    description: "¡Bienvenido a Santiago de Compostela! El destino final del famoso Camino de Santiago. ¡El quiz final pone a prueba todo lo que has aprendido!",
+    color: "#27AE60"
+  }
+];
+
+// ============================================================
+//  QUESTIONS
+// ============================================================
+const ALL_QUESTIONS = [
+  // ---- CITY 0: MADRID (easy, multiple choice) ----
+  {
+    city: 0,
+    type: "multiple",
+    points: 10,
+    text: "Ayer yo _____ una pizza.",
+    options: ["como", "comí", "comer", "comiste"],
+    correct: 1,
+    explanation: "Con 'yo' en Pretérito Indefinido, los verbos en -ER usan la terminación -í. 'comí' = yo comí."
+  },
+  {
+    city: 0,
+    type: "multiple",
+    points: 10,
+    text: "El lunes María _____ mucho agua.",
+    options: ["bebió", "beber", "bebe", "bebiste"],
+    correct: 0,
+    explanation: "Con 'él/ella' en Pretérito Indefinido, los verbos en -ER usan la terminación -ió. 'bebió' = ella bebió."
+  },
+  {
+    city: 0,
+    type: "multiple",
+    points: 10,
+    text: "El año pasado, tú _____ en Madrid.",
+    options: ["viviste", "viver", "viviste", "viví"],
+    correct: 0,
+    explanation: "Con 'tú' en Pretérito Indefinido, los verbos en -IR usan la terminación -iste. 'viviste' = tú viviste."
+  },
+  {
+    city: 0,
+    type: "multiple",
+    points: 10,
+    text: "Ayer nosotros _____ español en clase.",
+    options: ["hablar", "hablamos", "hablemos", "habla"],
+    correct: 1,
+    explanation: "Con 'nosotros' en Pretérito Indefinido, los verbos en -AR usan la terminación -amos. 'hablamos' = nosotros hablamos."
+  },
+  {
+    city: 0,
+    type: "multiple",
+    points: 10,
+    text: "La semana pasada, Ana _____ mucho.",
+    options: ["estudió", "estudiar", "estudia", "estudiaste"],
+    correct: 0,
+    explanation: "Con 'él/ella' en Pretérito Indefinido, los verbos en -AR usan la terminación -ó. 'estudió' = ella estudió."
+  },
+
+  // ---- CITY 1: SEVILLA (matching) ----
+  {
+    city: 1,
+    type: "matching",
+    points: 20,
+    text: "Conecta el pronombre con la forma correcta del verbo TRABAJAR:",
+    pairs: [
+      { left: "yo", right: "trabajé" },
+      { left: "tú", right: "trabajaste" },
+      { left: "él / ella", right: "trabajó" },
+      { left: "nosotros", right: "trabajamos" }
+    ],
+    explanation: "Las terminaciones del Pretérito Indefinido para -AR: yo→-é, tú→-aste, él→-ó, nosotros→-amos."
+  },
+  {
+    city: 1,
+    type: "multiple",
+    points: 20,
+    text: "El verano pasado, vosotros _____ a España.",
+    options: ["viajasteis", "viajaron", "viajar", "viajamos"],
+    correct: 0,
+    explanation: "Con 'vosotros' en Pretérito Indefinido, los verbos en -AR usan la terminación -asteis. 'viajasteis' = vosotros viajasteis."
+  },
+  {
+    city: 1,
+    type: "multiple",
+    points: 20,
+    text: "Ayer ellos _____ el mercado.",
+    options: ["visitar", "visitaron", "visitasteis", "visité"],
+    correct: 1,
+    explanation: "Con 'ellos/ellas' en Pretérito Indefinido, los verbos en -AR usan la terminación -aron. 'visitaron' = ellos visitaron."
+  },
+  {
+    city: 1,
+    type: "fill",
+    points: 20,
+    text: "Ayer nosotros _____ al cine.",
+    blank: "fuimos / caminamos",
+    answers: ["caminamos"],
+    hint: "Verbo: caminar. Pronombre: nosotros. Recuerda: caminar → nosotros camin...",
+    explanation: "Nosotros + caminar → 'caminamos'. Las terminaciones -AR de nosotros son iguales en presente y en pretérito."
+  },
+  {
+    city: 1,
+    type: "multiple",
+    points: 20,
+    text: "El año pasado yo _____ en una tienda.",
+    options: ["trabajé", "trabajaste", "trabajó", "trabajar"],
+    correct: 0,
+    explanation: "Yo + trabajar → 'trabajé'. La terminación de yo en -AR es -é."
+  },
+
+  // ---- CITY 2: VALENCIA (fill in the blank) ----
+  {
+    city: 2,
+    type: "fill",
+    points: 20,
+    text: "El sábado, Pedro _____ mucha agua después de correr.",
+    blank: "bebió",
+    answers: ["bebió"],
+    hint: "Verbo: beber. Pronombre: él. Recuerda: beber → él beb...",
+    explanation: "Él + beber → 'bebió'. La terminación de él/ella en -ER es -ió."
+  },
+  {
+    city: 2,
+    type: "fill",
+    points: 20,
+    text: "El año pasado, mis padres _____ en Valencia.",
+    blank: "vivieron",
+    answers: ["vivieron"],
+    hint: "Verbo: vivir. Pronombre: ellos. Recuerda: vivir → ellos vivieron.",
+    explanation: "Ellos + vivir → 'vivieron'. La terminación de ellos/ellas en -IR es -ieron."
+  },
+  {
+    city: 2,
+    type: "fill",
+    points: 20,
+    text: "Ayer, tú _____ mucho en la biblioteca.",
+    blank: "estudiaste",
+    answers: ["estudiaste"],
+    hint: "Verbo: estudiar. Pronombre: tú. Recuerda: estudiar → tú estudi...",
+    explanation: "Tú + estudiar → 'estudiaste'. La terminación de tú en -AR es -aste."
+  },
+  {
+    city: 2,
+    type: "multiple",
+    points: 20,
+    text: "Ayer los estudiantes _____ mucho en clase.",
+    options: ["hablaron", "hablasteis", "habló", "hablé"],
+    correct: 0,
+    explanation: "Ellos/los estudiantes + hablar → 'hablaron'. La terminación de ellos en -AR es -aron."
+  },
+  {
+    city: 2,
+    type: "fill",
+    points: 20,
+    text: "El martes yo _____ pan y leche.",
+    blank: "compré",
+    answers: ["compré"],
+    hint: "Verbo: comprar. Pronombre: yo. Recuerda: comprar → yo compr...",
+    explanation: "Yo + comprar → 'compré'. La terminación de yo en -AR es -é."
+  },
+
+  // ---- CITY 3: BARCELONA (dialogs) ----
+  {
+    city: 3,
+    type: "dialog",
+    points: 30,
+    speaker1: "Carlos",
+    line1: "¿Qué _____ ayer por la tarde?",
+    verb1hint: "(hacer - tú)",
+    speaker2: "Lucía",
+    line2: "Yo _____ con mis amigos.",
+    options: ["hablé / trabajé", "estudié / comí", "comí / bebí", "bebí / estudié"],
+    correct: 1,
+    explanation: "Carlos pregunta qué hizo Lucía: 'hiciste' no aparece (verbo irregular), pero la respuesta de Lucía: 'estudié' (yo + estudiar) y 'comí' (yo + comer)."
+  },
+  {
+    city: 3,
+    type: "dialog",
+    points: 30,
+    speaker1: "Profesora",
+    line1: "¿Vosotros _____ el libro para hoy?",
+    verb1hint: "(comprar - vosotros)",
+    options: ["comprasteis", "compraron", "compramos", "compré"],
+    correct: 0,
+    explanation: "Vosotros + comprar → 'comprasteis'. La terminación de vosotros en -AR es -asteis."
+  },
+  {
+    city: 3,
+    type: "multiple",
+    points: 30,
+    text: "Ayer por la mañana, yo _____ café y _____ el periódico.",
+    options: ["bebí / compré", "bebiste / compraste", "bebió / compró", "beber / comprar"],
+    correct: 0,
+    explanation: "Yo + beber → 'bebí'; yo + comprar → 'compré'. Dos formas en primera persona singular."
+  },
+  {
+    city: 3,
+    type: "fill",
+    points: 30,
+    text: "El año pasado, nosotros _____ a Barcelona de vacaciones.",
+    blank: "viajamos",
+    answers: ["viajamos"],
+    hint: "Verbo: viajar. Pronombre: nosotros. Recuerda: viajar → nosotros viaj...",
+    explanation: "Nosotros + viajar → 'viajamos'. Atención: para nosotros en -AR, la forma es igual en presente y en pretérito."
+  },
+  {
+    city: 3,
+    type: "matching",
+    points: 30,
+    text: "Conecta el pronombre con la forma correcta del verbo BEBER:",
+    pairs: [
+      { left: "yo", right: "bebí" },
+      { left: "tú", right: "bebiste" },
+      { left: "él / ella", right: "bebió" },
+      { left: "ellos", right: "bebieron" }
+    ],
+    explanation: "Las terminaciones del Pretérito Indefinido para -ER: yo→-í, tú→-iste, él→-ió, ellos→-ieron."
+  },
+
+  // ---- CITY 4: SANTIAGO (final mixed quiz) ----
+  {
+    city: 4,
+    type: "multiple",
+    points: 30,
+    text: "El sábado pasado, yo _____ por el Camino de Santiago.",
+    options: ["caminé", "caminaste", "caminó", "caminar"],
+    correct: 0,
+    explanation: "Yo + caminar → 'caminé'. La terminación de yo en -AR es -é."
+  },
+  {
+    city: 4,
+    type: "fill",
+    points: 30,
+    text: "Ayer, ellos _____ la catedral de Santiago.",
+    blank: "visitaron",
+    answers: ["visitaron"],
+    hint: "Verbo: visitar. Pronombre: ellos. Recuerda: visitar → ellos visit...",
+    explanation: "Ellos + visitar → 'visitaron'. La terminación de ellos en -AR es -aron."
+  },
+  {
+    city: 4,
+    type: "multiple",
+    points: 30,
+    text: "¿Cuál es la forma correcta? El peregrino _____ 30 kilómetros ayer.",
+    options: ["caminó", "caminas", "caminé", "caminar"],
+    correct: 0,
+    explanation: "Él (el peregrino) + caminar → 'caminó'. La terminación de él/ella en -AR es -ó."
+  },
+  {
+    city: 4,
+    type: "fill",
+    points: 30,
+    text: "Durante el viaje, nosotros _____ comida local y _____ vino español.",
+    blank: "compramos / bebimos",
+    answers: ["compramos / bebimos", "compramos/bebimos"],
+    hint: "comprar (nosotros) + beber (nosotros)...",
+    explanation: "Nosotros + comprar → 'compramos'; nosotros + beber → 'bebimos'."
+  },
+  {
+    city: 4,
+    type: "dialog",
+    points: 30,
+    speaker1: "Turista",
+    line1: "¿Usted _____ en Santiago mucho tiempo?",
+    verb1hint: "(vivir - usted)",
+    speaker2: "Local",
+    line2: "Sí, _____ aquí 10 años.",
+    options: ["viviste / viví", "vivió / viví", "vivió / viviste", "vivió / vivió"],
+    correct: 1,
+    explanation: "Usted (3ª persona) + vivir → 'vivió'; yo + vivir → 'viví'."
+  }
+];
+
+// ============================================================
+//  GAME STATE
+// ============================================================
+let playerName = "";
+let score = 0;
+let currentCityIndex = 0;
+let currentQuestionIndex = 0; // global question index
+let totalCorrect = 0;
+let totalQuestions = 0;
+let cityCorrect = 0;
+let badgesEarned = [];
+let answeredQuestions = []; // city-grouped question arrays
+let currentCityQuestions = [];
+let currentCityQIdx = 0;
+let matchSelected = null; // for matching questions
+
+// Build city question groups
+function buildQuestions() {
+  answeredQuestions = [];
+  for (let c = 0; c < CITIES.length; c++) {
+    answeredQuestions.push(ALL_QUESTIONS.filter(q => q.city === c));
+  }
+}
+
+// ============================================================
+//  AUDIO
+// ============================================================
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playSound(type) {
+  try {
+    const ctx = getAudio();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.type = 'sine';
+      o.frequency.setValueAtTime(440, ctx.currentTime);
+      o.frequency.setValueAtTime(554, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else if (type === 'wrong') {
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(220, ctx.currentTime);
+      o.frequency.setValueAtTime(180, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.2, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    } else if (type === 'levelup') {
+      [261, 329, 392, 523].forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gn = ctx.createGain();
+        osc.connect(gn); gn.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = f;
+        gn.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
+        gn.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.15 + 0.05);
+        gn.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
+        osc.start(ctx.currentTime + i * 0.15);
+        osc.stop(ctx.currentTime + i * 0.15 + 0.4);
+      });
+    } else if (type === 'complete') {
+      [261, 329, 392, 523, 659, 784].forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gn = ctx.createGain();
+        osc.connect(gn); gn.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = f;
+        gn.gain.setValueAtTime(0, ctx.currentTime + i * 0.12);
+        gn.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.12 + 0.05);
+        gn.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.5);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.5);
+      });
+    }
+  } catch(e) {}
+}
+
+// ============================================================
+//  CONFETTI
+// ============================================================
+function launchConfetti(count) {
+  const area = document.getElementById('confettiArea');
+  area.innerHTML = '';
+  const colors = ['#D62828','#F7B731','#F77F00','#27AE60','#003087','#E91E8C','#8B5CF6'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.top = '-20px';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    el.style.animationDelay = (Math.random() * 1.5) + 's';
+    el.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+    area.appendChild(el);
+  }
+  setTimeout(() => { area.innerHTML = ''; }, 5000);
+}
+
+// ============================================================
+//  POINTS POPUP
+// ============================================================
+function showPointsPopup(pts) {
+  const el = document.getElementById('pointsPopup');
+  document.getElementById('pointsPopupVal').textContent = '+' + pts;
+  el.className = 'points-popup show';
+  setTimeout(() => { el.className = 'points-popup hide'; }, 900);
+  setTimeout(() => { el.className = 'points-popup'; }, 1300);
+}
+
+// ============================================================
+//  SCREENS
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ============================================================
+//  BADGES ROW
+// ============================================================
+function renderBadgesRow(containerId, currentEarned) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  CITIES.forEach((city, i) => {
+    const span = document.createElement('span');
+    if (currentEarned.includes(i)) {
+      span.className = 'badge-earned';
+      span.textContent = city.badge;
+      span.title = city.badgeName;
+    } else {
+      span.className = 'badge-locked';
+      span.textContent = city.badge;
+    }
+    el.appendChild(span);
+  });
+}
+
+// ============================================================
+//  START GAME
+// ============================================================
+function startGame() {
+  const input = document.getElementById('playerNameInput');
+  const name = input.value.trim();
+  if (!name) {
+    input.style.borderColor = '#D62828';
+    input.placeholder = '¡Escribe tu nombre!';
+    input.focus();
+    return;
+  }
+  playerName = name;
+  score = 0;
+  currentCityIndex = 0;
+  totalCorrect = 0;
+  totalQuestions = 0;
+  badgesEarned = [];
+  buildQuestions();
+  showCityIntro(0);
+}
+
+// ============================================================
+//  CITY INTRO
+// ============================================================
+function showCityIntro(cityIdx) {
+  currentCityIndex = cityIdx;
+  const city = CITIES[cityIdx];
+  document.getElementById('introEmoji').textContent = city.emoji;
+  document.getElementById('introCityName').textContent = city.name;
+  document.getElementById('introCityTagline').textContent = city.tagline;
+  document.getElementById('introStageBadge').textContent = 'Etapa ' + (cityIdx + 1) + ' de ' + CITIES.length;
+  document.getElementById('introCityDesc').textContent = city.description;
+  document.getElementById('introBadgeEmoji').textContent = city.badge;
+  document.getElementById('introBadgeName').textContent = city.name;
+  renderBadgesRow('badgesRowIntro', badgesEarned);
+  showScreen('screenCityIntro');
+}
+
+// ============================================================
+//  START CITY QUESTIONS
+// ============================================================
+function startCityQuestions() {
+  currentCityQuestions = answeredQuestions[currentCityIndex];
+  currentCityQIdx = 0;
+  cityCorrect = 0;
+  updateHeader();
+  renderQuestion();
+  showScreen('screenGame');
+}
+
+function updateHeader() {
+  const city = CITIES[currentCityIndex];
+  document.getElementById('cityIndicator').textContent = city.name + ' ' + city.emoji;
+  document.getElementById('scoreDisplay').textContent = score;
+  const globalDone = getGlobalQuestionsDone();
+  document.getElementById('progressText').textContent = 'Pregunta ' + (globalDone + 1) + ' de ' + ALL_QUESTIONS.length;
+  const pct = (globalDone / ALL_QUESTIONS.length) * 100;
+  document.getElementById('progressBarFill').style.width = pct + '%';
+}
+
+function getGlobalQuestionsDone() {
+  let done = 0;
+  for (let c = 0; c < currentCityIndex; c++) done += answeredQuestions[c].length;
+  done += currentCityQIdx;
+  return done;
+}
+
+// ============================================================
+//  RENDER QUESTION
+// ============================================================
+function renderQuestion() {
+  const q = currentCityQuestions[currentCityQIdx];
+  const area = document.getElementById('questionArea');
+  area.innerHTML = '';
+  updateHeader();
+
+  const typeColors = {
+    multiple: { bg: '#E3F2FD', color: '#1565C0', label: '🔤 Elige la respuesta' },
+    matching: { bg: '#F3E5F5', color: '#6A1B9A', label: '🔗 Conecta' },
+    fill:     { bg: '#E8F5E9', color: '#1B5E20', label: '✏️ Completa la frase' },
+    dialog:   { bg: '#FFF3E0', color: '#E65100', label: '💬 Diálogo' }
+  };
+  const tc = typeColors[q.type];
+
+  let html = '<div class="question-card">';
+  html += '<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">';
+  html += '<span class="question-type-badge" style="background:' + tc.bg + ';color:' + tc.color + '">' + tc.label + '</span>';
+  html += '<span class="question-points">⭐ ' + q.points + ' pts</span>';
+  html += '</div>';
+
+  if (q.type === 'multiple') {
+    html += renderMultiple(q);
+  } else if (q.type === 'fill') {
+    html += renderFill(q);
+  } else if (q.type === 'matching') {
+    html += renderMatching(q);
+  } else if (q.type === 'dialog') {
+    html += renderDialog(q);
+  }
+
+  html += '<div class="feedback-box" id="feedbackBox"></div>';
+  html += '<button class="btn-next" id="btnNext" onclick="nextQuestion()">SIGUIENTE ➡️</button>';
+  html += '</div>';
+  area.innerHTML = html;
+
+  if (q.type === 'fill') {
+    const inp = document.getElementById('fillInput');
+    if (inp) {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkFill();
+      });
+      setTimeout(() => inp.focus(), 100);
+    }
+  }
+
+  if (q.type === 'matching') {
+    matchSelected = null;
+    initMatching(q);
+  }
+}
+
+// ---- Multiple Choice ----
+function renderMultiple(q) {
+  let html = '<div class="question-number">Pregunta ' + (currentCityQIdx + 1) + ' de ' + currentCityQuestions.length + '</div>';
+  html += '<div class="question-text">' + q.text + '</div>';
+  html += '<div class="options-grid">';
+  q.options.forEach((opt, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    html += '<button class="option-btn" id="opt' + i + '" onclick="checkMultiple(' + i + ')">';
+    html += '<strong style="color:var(--red);margin-right:8px">' + letters[i] + '.</strong> ' + opt;
+    html += '</button>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function checkMultiple(chosen) {
+  const q = currentCityQuestions[currentCityQIdx];
+  totalQuestions++;
+  const correct = chosen === q.correct;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    if (i === chosen && !correct) btn.classList.add('wrong');
+  });
+  handleResult(correct, q);
+}
+
+// ---- Fill in the blank ----
+function renderFill(q) {
+  let html = '<div class="question-number">Pregunta ' + (currentCityQIdx + 1) + ' de ' + currentCityQuestions.length + '</div>';
+  // Build question with blank indicator
+  const textWithBlank = q.text.replace(/_{2,}/g, '<span class="blank">___________</span>');
+  html += '<div class="question-text">' + textWithBlank + '</div>';
+  if (q.hint) {
+    html += '<div class="hint-box">💡 Pista: ' + q.hint + '</div>';
+  }
+  html += '<input type="text" class="fill-input" id="fillInput" placeholder="Escribe la forma correcta..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">';
+  html += '<button class="btn-check" onclick="checkFill()">✓ COMPROBAR</button>';
+  return html;
+}
+
+function checkFill() {
+  const q = currentCityQuestions[currentCityQIdx];
+  const input = document.getElementById('fillInput');
+  if (!input) return;
+  const val = input.value.trim().toLowerCase();
+  if (!val) { input.focus(); return; }
+  totalQuestions++;
+  const correct = q.answers.some(a => a.toLowerCase() === val);
+  input.disabled = true;
+  const checkBtn = document.querySelector('.btn-check');
+  if (checkBtn) checkBtn.disabled = true;
+  input.className = 'fill-input ' + (correct ? 'correct-input' : 'wrong-input');
+  if (!correct) {
+    const hint = document.createElement('div');
+    hint.style.cssText = 'font-size:14px;color:#C62828;font-weight:700;margin-top:6px;text-align:center';
+    hint.textContent = '✗ Respuesta correcta: ' + q.answers[0];
+    input.parentNode.insertBefore(hint, input.nextSibling);
+  }
+  handleResult(correct, q);
+}
+
+// ---- Matching ----
+let matchState = {};
+function renderMatching(q) {
+  let html = '<div class="question-number">Pregunta ' + (currentCityQIdx + 1) + ' de ' + currentCityQuestions.length + '</div>';
+  html += '<div class="question-text" style="font-size:16px">' + q.text + '</div>';
+  html += '<div class="hint-box">💡 Toca primero un pronombre (izquierda) y luego la forma verbal (derecha).</div>';
+  html += '<div class="matching-container">';
+  html += '<div class="matching-col"><div class="matching-col-title">Pronombre</div>';
+  q.pairs.forEach((p, i) => {
+    html += '<div class="match-item match-left" id="ml' + i + '" data-idx="' + i + '" onclick="selectLeft(' + i + ')">' + p.left + '</div>';
+  });
+  html += '</div>';
+  html += '<div class="matching-col"><div class="matching-col-title">Forma verbal</div>';
+  // Shuffle rights
+  const shuffled = q.pairs.map((p, i) => ({ text: p.right, origIdx: i })).sort(() => Math.random() - 0.5);
+  shuffled.forEach((item, i) => {
+    html += '<div class="match-item match-right" id="mr' + i + '" data-orig="' + item.origIdx + '" onclick="selectRight(' + i + ', ' + item.origIdx + ')">' + item.text + '</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+function initMatching(q) {
+  matchState = {
+    q: q,
+    leftSel: null,
+    matched: new Set(),
+    correctCount: 0,
+    totalPairs: q.pairs.length
+  };
+}
+
+function selectLeft(idx) {
+  if (matchState.matched.has('l' + idx)) return;
+  document.querySelectorAll('.match-left').forEach(el => el.classList.remove('selected'));
+  matchState.leftSel = idx;
+  document.getElementById('ml' + idx).classList.add('selected');
+}
+
+function selectRight(displayIdx, origIdx) {
+  if (matchState.leftSel === null) return;
+  const leftIdx = matchState.leftSel;
+  if (matchState.matched.has('l' + leftIdx)) return;
+
+  const leftEl = document.getElementById('ml' + leftIdx);
+  const rightEl = document.getElementById('mr' + displayIdx);
+
+  const correct = origIdx === leftIdx;
+  leftEl.classList.remove('selected');
+  leftEl.classList.add(correct ? 'matched-correct' : 'matched-wrong');
+  rightEl.classList.add(correct ? 'matched-correct' : 'matched-wrong');
+  leftEl.setAttribute('data-matched', 'true');
+  rightEl.setAttribute('data-matched', 'true');
+
+  if (correct) {
+    matchState.matched.add('l' + leftIdx);
+    matchState.correctCount++;
+    playSound('correct');
+  } else {
+    playSound('wrong');
+    setTimeout(() => {
+      leftEl.classList.remove('matched-wrong');
+      rightEl.classList.remove('matched-wrong');
+    }, 800);
+  }
+
+  matchState.leftSel = null;
+
+  if (matchState.matched.size === matchState.totalPairs) {
+    totalQuestions++;
+    const allCorrect = matchState.correctCount === matchState.totalPairs;
+    handleResult(allCorrect, matchState.q);
+  }
+}
+
+// ---- Dialog ----
+function renderDialog(q) {
+  let html = '<div class="question-number">Pregunta ' + (currentCityQIdx + 1) + ' de ' + currentCityQuestions.length + '</div>';
+
+  if (q.line2) {
+    // Two-line dialog, pick both
+    html += '<div class="dialog-bubble">';
+    html += '<div class="dialog-speaker"><span class="dialog-speaker-icon">👤</span>' + q.speaker1 + '</div>';
+    html += '<div class="dialog-text">' + q.line1 + ' <em style="color:var(--red)">(' + q.verb1hint + ')</em></div>';
+    html += '</div>';
+    html += '<div class="dialog-bubble">';
+    html += '<div class="dialog-speaker"><span class="dialog-speaker-icon">👩</span>' + q.speaker2 + '</div>';
+    html += '<div class="dialog-text">' + q.line2 + '</div>';
+    html += '</div>';
+    html += '<div style="font-size:15px;font-weight:800;color:#555;margin-bottom:12px">¿Qué dijo cada uno?</div>';
+  } else {
+    // Single line dialog
+    html += '<div class="dialog-bubble">';
+    html += '<div class="dialog-speaker"><span class="dialog-speaker-icon">👤</span>' + q.speaker1 + '</div>';
+    html += '<div class="dialog-text">' + q.line1 + ' <em style="color:var(--red)">(' + q.verb1hint + ')</em></div>';
+    html += '</div>';
+  }
+
+  html += '<div class="options-grid">';
+  q.options.forEach((opt, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    html += '<button class="option-btn" id="opt' + i + '" onclick="checkMultiple(' + i + ')">';
+    html += '<strong style="color:var(--red);margin-right:8px">' + letters[i] + '.</strong> ' + opt;
+    html += '</button>';
+  });
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+//  HANDLE RESULT
+// ============================================================
+function handleResult(correct, q) {
+  if (correct) {
+    score += q.points;
+    totalCorrect++;
+    cityCorrect++;
+    document.getElementById('scoreDisplay').textContent = score;
+    const sb = document.getElementById('scoreDisplay').parentElement;
+    sb.classList.add('score-flash');
+    setTimeout(() => sb.classList.remove('score-flash'), 300);
+    showPointsPopup(q.points);
+    playSound('correct');
+  } else {
+    playSound('wrong');
+  }
+
+  // Show feedback
+  const fb = document.getElementById('feedbackBox');
+  if (fb) {
+    fb.className = 'feedback-box ' + (correct ? 'correct' : 'wrong');
+    fb.innerHTML = (correct
+      ? '<div class="feedback-icon">✅</div><div class="feedback-title ok">¡Correcto! +' + q.points + ' puntos</div>'
+      : '<div class="feedback-icon">❌</div><div class="feedback-title bad">Incorrecto</div>'
+    ) + '<div class="feedback-explain">📚 ' + q.explanation + '</div>';
+  }
+
+  const btnNext = document.getElementById('btnNext');
+  if (btnNext) btnNext.classList.add('visible');
+}
+
+// ============================================================
+//  NEXT QUESTION
+// ============================================================
+function nextQuestion() {
+  currentCityQIdx++;
+  if (currentCityQIdx < currentCityQuestions.length) {
+    renderQuestion();
+  } else {
+    // City complete
+    showCityComplete();
+  }
+}
+
+// ============================================================
+//  CITY COMPLETE
+// ============================================================
+function showCityComplete() {
+  const city = CITIES[currentCityIndex];
+  badgesEarned.push(currentCityIndex);
+  playSound('levelup');
+
+  document.getElementById('cityBadgeDisplay').textContent = city.badge;
+  document.getElementById('cityCompleteTitle').textContent = '¡' + city.name + ' completado! ' + city.emoji;
+  document.getElementById('cityCompleteMsg').textContent = 'Conseguiste la insignia de ' + city.name + ' 🎉';
+  document.getElementById('ccScore').textContent = score;
+  document.getElementById('ccCorrect').textContent = cityCorrect + ' / ' + currentCityQuestions.length;
+
+  const btnNextCity = document.getElementById('btnNextCity');
+  if (currentCityIndex < CITIES.length - 1) {
+    btnNextCity.textContent = 'SIGUIENTE: ' + CITIES[currentCityIndex + 1].name + ' ' + CITIES[currentCityIndex + 1].emoji + ' ➡️';
+  } else {
+    btnNextCity.textContent = '🏆 VER RESULTADOS FINALES';
+  }
+
+  renderBadgesRow('badgesRowComplete', badgesEarned);
+  launchConfetti(30);
+  showScreen('screenCityComplete');
+
+  // Level up overlay
+  const overlay = document.getElementById('levelUpOverlay');
+  document.getElementById('levelUpIcon').textContent = city.badge;
+  document.getElementById('levelUpSub').textContent = '¡Insignia de ' + city.name + ' ganada!';
+  overlay.classList.add('show');
+  setTimeout(() => overlay.classList.remove('show'), 2200);
+}
+
+// ============================================================
+//  PROCEED AFTER CITY
+// ============================================================
+function proceedAfterCity() {
+  currentCityIndex++;
+  if (currentCityIndex < CITIES.length) {
+    showCityIntro(currentCityIndex);
+  } else {
+    showFinal();
+  }
+}
+
+// ============================================================
+//  FINAL SCREEN
+// ============================================================
+function showFinal() {
+  playSound('complete');
+  launchConfetti(60);
+
+  const total = ALL_QUESTIONS.length;
+  const pct = Math.round((totalCorrect / total) * 100);
+  const maxScore = ALL_QUESTIONS.reduce((s, q) => s + q.points, 0);
+
+  document.getElementById('finalPlayerName').textContent = playerName;
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalPercent').textContent = pct + '%';
+  document.getElementById('finalCorrect').textContent = totalCorrect;
+  document.getElementById('finalTotal').textContent = total;
+
+  let grade, emoji, message, trophy;
+  if (pct >= 90) {
+    grade = '¡Excelente!'; emoji = '🌟'; trophy = '🏆';
+    message = '¡Eres un maestro del Pretérito Indefinido! Tus viajes por España fueron perfectos. ¡Enhorabuena!';
+  } else if (pct >= 75) {
+    grade = 'Muy bien'; emoji = '⭐'; trophy = '🥇';
+    message = '¡Muy buen trabajo! Conoces muy bien el Pretérito Indefinido. ¡Sigue así!';
+  } else if (pct >= 55) {
+    grade = 'Bien'; emoji = '👍'; trophy = '🥈';
+    message = '¡Buen trabajo! Conoces los fundamentos del Pretérito Indefinido. ¡Practica un poco más!';
+  } else {
+    grade = 'Sigue practicando'; emoji = '💪'; trophy = '🎯';
+    message = '¡Buen intento! El Pretérito Indefinido necesita práctica. ¡Vuelve a intentarlo!';
+  }
+
+  document.getElementById('finalTrophy').textContent = trophy;
+  document.getElementById('finalGrade').textContent = emoji + ' ' + grade;
+  document.getElementById('finalMessage').innerHTML = '<strong>' + grade + '</strong><br>' + message;
+  renderBadgesRow('badgesRowFinal', badgesEarned);
+  showScreen('screenFinal');
+}
+
+// ============================================================
+//  RESTART
+// ============================================================
+function restartGame() {
+  document.getElementById('playerNameInput').value = '';
+  showScreen('screenWelcome');
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('playerNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') startGame();
+  });
+});
+</script>
+</body>
+</html>
